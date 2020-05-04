@@ -1,0 +1,18 @@
+##Sentiment Function
+
+import requests 
+import json
+
+def get_article_sentiment(text):
+    url = "http://text-processing.com/api/sentiment/"
+    body = f"text='{text}'"
+    response = requests.post(url, data=body)
+    return response.json()
+
+for articles in data['articles']: 
+    display(HTML(f"<h1>Positivity Analysis for <em>{'articles['name']}</em></h1>"))
+    display(Image(articles{'image_url'], width=200))
+    titles = get_article_title(articles['title']) 
+    for title in articles['title']:
+          sentiment = get_article_sentiment(review['text'])
+          print(sentiment)
