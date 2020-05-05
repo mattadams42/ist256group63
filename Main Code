@@ -1,0 +1,84 @@
+import requests
+import plotly.express as px
+import plotly.graph_objects as go
+import chart_studio as plotly
+
+ 
+
+print('Running... This may take a few seconds...')
+
+ 
+def getarticles():
+    articlelist =[]
+    url = 'https://newsapi.org/v2/top-headlines'
+    key = '16be610de7a841fc89a30c5bdbf59203'
+    params = {'apiKey' : key, 'q' : 'corona' or 'covid', 'language': 'en', 'pageSize' : 50}
+    response =requests.get(url, params = params)
+    data = response.json()
+    for articles in data['articles']:
+        articlelist.append(articles['title'])
+    return articlelist
+
+ 
+
+def geturls(article):
+    url = 'https://newsapi.org/v2/top-headlines'
+    key = '16be610de7a841fc89a30c5bdbf59203'
+    params = {'apiKey' : key, 'q' : article,'language': 'en',}
+    response =requests.get(url, params = params)
+    data = response.json()
+    for articles in data['articles']:
+        url = articles['url']
+    return url
+
+ 
+
+def get_article_sentiment(text):
+    url = "http://text-processing.com/api/sentiment/"
+    body = { 'text' : text}
+    response = requests.post(url, data=body)
+    return response.json()
+
+ 
+
+def displayplot(positive, negative):
+    labels = ['positive', 'negative']
+    values = [positive, negative]
+    fig = go.Figure(data=[go.Pie(labels=labels, values=values,  title='Number of Positive and Negative Articles')])
+    return fig.show()
+
+articles = getarticles()
+pos = 0
+neg = 0
+articlenum = 1
+positive_articles = []
+
+for article in articles:
+    sentiment = get_article_sentiment(article)
+    sentiment = sentiment['probability']['pos']
+    if sentiment > 0.6:
+        pos += 1
+        positive_articles.append(article)
+    else:
+        neg += 1
+    
+displayplot(pos, neg)
+ 
+print("Here are some positive articles")
+for article in positive_articles:
+    print(f'{articlenum}: {article}')
+articlenum += 1
+
+   
+
+while True:
+    urlchoice = input("Type the number of the article you would like to read(If not type 'quit'): ")
+    if urlchoice.lower() == 'quit':
+        break
+    else:
+        try:
+            print('Here you go ->', geturls(articles[int(urlchoice)-1]))
+        except ValueError:
+            print('that is not a number')
+        except IndexError:
+            print('thats not a valid number')
