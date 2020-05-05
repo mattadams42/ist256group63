@@ -1,0 +1,5 @@
+def displayplot(positive, negative)
+    labels = ['positive', 'negative']
+    values = [positive, negative]
+    fig = go.Figure(data=[go.Pie(labels=labels, values=values)])
+    return fig.show()
